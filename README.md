@@ -36,6 +36,8 @@ Generate business-relevant insights through SQL-based analysis to support **data
 
 The resulting views (dim & fact tables) are designed to be consumed by BI tools such as **Power BI** or **Tableau**.
 
+![Data Architecture](Documentations/Data_Architecture.png)
+
 ---
 
 ## 🛠️ Tools & Technologies Used
