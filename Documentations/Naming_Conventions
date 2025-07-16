@@ -1,90 +1,80 @@
-# **Naming Conventions**
+# 📘 Naming Conventions and Abbreviations
 
-This document outlines the naming conventions used for schemas, tables, views, columns, and other objects in the data warehouse.
-
-## **Table of Contents**
-
-1. [General Principles](#general-principles)
-2. [Table Naming Conventions](#table-naming-conventions)
-
-   * [Bronze Rules](#bronze-rules)
-   * [Silver Rules](#silver-rules)
-   * [Gold Rules](#gold-rules)
-3. [Column Naming Conventions](#column-naming-conventions)
-
-   * [Surrogate Keys](#surrogate-keys)
-   * [Technical Columns](#technical-columns)
-4. [Stored Procedure Naming Conventions](#stored-procedure-naming-conventions)
+This document outlines the naming conventions and common abbreviations used across the data warehouse layers (Bronze, Silver, Gold). It serves as a reference for consistent, readable, and scalable data model design.
 
 ---
 
-## **General Principles**
+## 📚 Table of Contents
 
-* Use `snake_case`, with lowercase letters and underscores (`_`) to separate words.
-* Use **English** for all schema, table, column, and procedure names.
-* Avoid SQL reserved keywords (e.g., `date`, `order`) in object names.
-* Be consistent in structure, abbreviations, and formatting.
+1. [General Principles](#general-principles)
+2. [Naming Conventions](#naming-conventions)
 
-## **Table Naming Conventions**
+   * [Tables & Views](#tables--views)
+   * [Columns](#columns)
+   * [Stored Procedures](#stored-procedures)
+3. [Common Abbreviations](#common-abbreviations)
+4. [Good vs. Bad Naming Examples](#good-vs-bad-naming-examples)
 
-### **Bronze Rules**
+---
 
-* Start with the **source system name**, followed by the **original table name**.
-* No renaming of columns or transformation of data.
-* Format: `source_table`
-  Example: `crm_cust_info`, `erp_loc_a101`
+## 🧭 General Principles
 
-### **Silver Rules**
+* Use **snake\_case** for all object names (lowercase letters with underscores).
+* Use **English** for all naming.
+* Be **descriptive but concise**.
+* Avoid SQL **reserved words**.
+* Prefix by **source or function** where applicable.
 
-* Also begin with the **source system name**, but include **cleaned and transformed** data.
-* Columns can be renamed or standardized.
-* Format: `source_table` (e.g., `crm_sales_details`, `erp_cust_az12`)
+---
 
-### **Gold Rules**
+## 🏷️ Naming Conventions
 
-* Use **business-friendly, meaningful** names that describe the role of the table.
-* Use a prefix that reflects the table’s function:
+### Tables & Views
 
-  * `dim_` → Dimension table
-  * `fact_` → Fact table
-  * `report_` → Reporting view
+| Layer  | Convention              | Example                       |
+| ------ | ----------------------- | ----------------------------- |
+| Bronze | `<source>_<table>`      | `crm_customer_info`           |
+| Silver | `<source>_<table>`      | `silver.crm_cust_info`        |
+| Gold   | `dim_` / `fact_` prefix | `dim_customers`, `fact_sales` |
 
-Examples:
+### Columns
 
-* `dim_customers`, `fact_sales`
+* **Primary Keys:** `<table_name>_key` → `customer_key`
+* **Foreign Keys:** `<ref_table>_key` → `product_key`, `customer_key`
+* **Technical Columns:** `dwh_<description>` → `dwh_load_date`
 
-#### Glossary of Category Prefixes
+### Stored Procedures
 
-| Prefix    | Meaning         | Example               |
-| --------- | --------------- | --------------------- |
-| `dim_`    | Dimension table | `dim_product`         |
-| `fact_`   | Fact table      | `fact_sales`          |
+* Pattern: `load_<layer>` → `load_bronze`, `load_silver`
 
+---
 
-## **Column Naming Conventions**
+## 📖 Common Abbreviations
 
-### **Surrogate Keys**
+| Abbreviation | Full Meaning      | Used In Context            |
+| ------------ | ----------------- | -------------------------- |
+| `cst`        | Customer          | `cst_id`, `cst_key`        |
+| `prd`        | Product           | `prd_id`, `prd_cost`       |
+| `sls`        | Sales             | `sls_ord_num`, `sls_sales` |
+| `id`         | ID                | `cid`, `prd_id`            |
+| `gen`        | Gender            | `gen`, `gender`            |
+| `bdate`      | Birthdate         | `bdate`                    |
+| `cntry`      | Country           | `cntry`, `country`         |
+| `cat`        | Category          | `cat_id`                   |
 
-* Primary keys in dimension tables use `_key` suffix.
-* Format: `<entity>_key`
+---
 
-  * Example: `customer_key`, `product_key`
+## ✅ Good vs. 🚫 Bad Naming Examples
 
-### **Technical Columns**
+| Good Name       | Bad Name     | Why Bad?                              |
+| --------------- | ------------ | ------------------------------------- |
+| `customer_key`  | `id`         | Too generic                           |
+| `prd_cost`      | `cost`       | Missing context                       |
+| `sls_order_dt`  | `date`       | Ambiguous, lacks business context     |
+| `dim_customers` | `tbl_1`      | Non-descriptive                       |
+| `fact_sales`    | `data_sheet` | Not aligned with dimensional modeling |
+| `dwh_load_date` | `timestamp`  | Vague, unclear purpose                |
 
-* All system-generated columns start with `dwh_`.
-* Format: `dwh_<function>`
+---
 
-  * Example: `dwh_load_date`
-
-## **Stored Procedure Naming Conventions**
-
-* All stored procedures follow the `load_<layer>` pattern.
-
-  * `<layer>` can be `bronze`, `silver`, or `gold`
-
-Examples:
-
-* `load_bronze` → Loads raw files into Bronze
-* `load_silver` → Transforms Bronze into Silver
-* `load_gold` → Aggregates Silver into Gold (report-ready)
+> 🔄 **Keep this document up to date** when new layers, patterns, or systems are introduced. Consistency is key to sustainable analytics. 😊
