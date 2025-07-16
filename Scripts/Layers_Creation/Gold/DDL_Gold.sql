@@ -33,13 +33,15 @@
     and reporting.
  =============================================
 */
-
-
+-- Drop Gold Views in the correct dependency order
+DROP VIEW IF EXISTS gold.fact_sales;
+DROP VIEW IF EXISTS gold.dim_products;
+DROP VIEW IF EXISTS gold.dim_customers;
 
 /* ================================================================================
    View: gold.dim_customers
 ================================================================================ */
-DROP TABLE IF EXISTS gold.dim_customers;
+
 CREATE VIEW gold.dim_customers AS
 SELECT row_number() OVER (ORDER BY cst_id) AS customer_key,    -- Surrogate key
        ci.cst_id                           AS customer_id,     -- CRM customer ID
@@ -66,7 +68,7 @@ FROM silver.crm_cust_info ci
 /* ================================================================================
    View: gold.dim_products
 ================================================================================ */
-DROP TABLE IF EXISTS gold.dim_products;
+
 CREATE VIEW gold.dim_products AS
 SELECT row_number() OVER (ORDER BY pn.prd_start_dt, pn.prd_key) AS product_key, -- Surrogate key
        pn.prd_id                                                AS product_id,
@@ -88,7 +90,7 @@ WHERE prd_end_dt IS NULL; -- Exclude historical products
 /* ================================================================================
    View: gold.fact_sales
 ================================================================================ */
-DROP TABLE IF EXISTS gold.fact_sales;
+
 CREATE VIEW gold.fact_sales AS
 SELECT sd.sls_ord_num  AS order_number, -- Unique order reference
        pr.product_key,                  -- FK to dim_products
