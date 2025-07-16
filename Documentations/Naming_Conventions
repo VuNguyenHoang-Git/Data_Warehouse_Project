@@ -1,0 +1,90 @@
+# **Naming Conventions**
+
+This document outlines the naming conventions used for schemas, tables, views, columns, and other objects in the data warehouse.
+
+## **Table of Contents**
+
+1. [General Principles](#general-principles)
+2. [Table Naming Conventions](#table-naming-conventions)
+
+   * [Bronze Rules](#bronze-rules)
+   * [Silver Rules](#silver-rules)
+   * [Gold Rules](#gold-rules)
+3. [Column Naming Conventions](#column-naming-conventions)
+
+   * [Surrogate Keys](#surrogate-keys)
+   * [Technical Columns](#technical-columns)
+4. [Stored Procedure Naming Conventions](#stored-procedure-naming-conventions)
+
+---
+
+## **General Principles**
+
+* Use `snake_case`, with lowercase letters and underscores (`_`) to separate words.
+* Use **English** for all schema, table, column, and procedure names.
+* Avoid SQL reserved keywords (e.g., `date`, `order`) in object names.
+* Be consistent in structure, abbreviations, and formatting.
+
+## **Table Naming Conventions**
+
+### **Bronze Rules**
+
+* Start with the **source system name**, followed by the **original table name**.
+* No renaming of columns or transformation of data.
+* Format: `source_table`
+  Example: `crm_cust_info`, `erp_loc_a101`
+
+### **Silver Rules**
+
+* Also begin with the **source system name**, but include **cleaned and transformed** data.
+* Columns can be renamed or standardized.
+* Format: `source_table` (e.g., `crm_sales_details`, `erp_cust_az12`)
+
+### **Gold Rules**
+
+* Use **business-friendly, meaningful** names that describe the role of the table.
+* Use a prefix that reflects the table’s function:
+
+  * `dim_` → Dimension table
+  * `fact_` → Fact table
+  * `report_` → Reporting view
+
+Examples:
+
+* `dim_customers`, `fact_sales`
+
+#### Glossary of Category Prefixes
+
+| Prefix    | Meaning         | Example               |
+| --------- | --------------- | --------------------- |
+| `dim_`    | Dimension table | `dim_product`         |
+| `fact_`   | Fact table      | `fact_sales`          |
+
+
+## **Column Naming Conventions**
+
+### **Surrogate Keys**
+
+* Primary keys in dimension tables use `_key` suffix.
+* Format: `<entity>_key`
+
+  * Example: `customer_key`, `product_key`
+
+### **Technical Columns**
+
+* All system-generated columns start with `dwh_`.
+* Format: `dwh_<function>`
+
+  * Example: `dwh_load_date`
+
+## **Stored Procedure Naming Conventions**
+
+* All stored procedures follow the `load_<layer>` pattern.
+
+  * `<layer>` can be `bronze`, `silver`, or `gold`
+
+Examples:
+
+* `load_bronze` → Loads raw files into Bronze
+* `load_silver` → Transforms Bronze into Silver
+* `load_gold` → Aggregates Silver into Gold (report-ready)
