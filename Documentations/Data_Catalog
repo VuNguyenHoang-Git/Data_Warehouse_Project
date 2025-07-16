@@ -1,0 +1,98 @@
+# 📊 Gold Layer – Data Catalog
+
+Welcome to the **Gold Layer** documentation of our Data Warehouse.  
+This catalog provides a technical overview of dimension and fact tables that power reporting, dashboards, and advanced analytics.
+
+---
+
+## 🧭 Overview
+
+The **Gold Layer** is the business-ready representation of cleansed and conformed data.  
+It is optimized for performance, readability, and semantic consistency.
+
+- 🔁 **Dimension Tables (`dim_`)**: Contain descriptive attributes (slowly changing).
+- 📈 **Fact Tables (`fact_`)**: Contain measurable business events (e.g., sales).
+- 🧹 Cleaned & standardized from the Silver Layer.
+- 🔗 Fully joinable across dimensions for further analysis.
+
+---
+
+## 📂 Table Catalog
+
+### 🧑‍💼 `gold.dim_customers`  
+Stores customer demographic & geographic data.
+
+| 🔑 Column           | 📐 Data Type    | 📝 Description                                |
+|--------------------|----------------|-----------------------------------------------|
+| `customer_key`     | `INT`          | Surrogate key                                 |
+| `customer_id`      | `INT`          | Unique CRM identifier                         |
+| `customer_number`  | `NVARCHAR(50)` | Alphanumeric customer ID                      |
+| `first_name`       | `NVARCHAR(50)` | Customer's first name                         |
+| `last_name`        | `NVARCHAR(50)` | Customer's last name                          |
+| `country`          | `NVARCHAR(50)` | Country of residence                          |
+| `marital_status`   | `NVARCHAR(50)` | Single / Married / n/a                        |
+| `gender`           | `NVARCHAR(50)` | Male / Female / n/a                           |
+| `birthdate`        | `DATE`         | Date of birth                                 |
+| `create_date`      | `DATE`         | CRM record creation date                      |
+
+---
+
+### 🚲 `gold.dim_products`  
+Contains product classification and cost details.
+
+| 🔑 Column            | 📐 Data Type    | 📝 Description                                |
+|---------------------|----------------|-----------------------------------------------|
+| `product_key`       | `INT`          | Surrogate key                                 |
+| `product_id`        | `INT`          | Internal product ID                           |
+| `product_number`    | `NVARCHAR(50)` | Alphanumeric code                             |
+| `product_name`      | `NVARCHAR(50)` | Descriptive name                              |
+| `category_id`       | `NVARCHAR(50)` | Foreign key to product category               |
+| `category`          | `NVARCHAR(50)` | Product category (e.g., Bikes)                |
+| `subcategory`       | `NVARCHAR(50)` | Specific product type                         |
+| `maintenance`       | `NVARCHAR(50)` | Maintenance required (`Yes` / `No`)           |
+| `product_cost`      | `INT`          | Base cost of product                          |
+| `product_line`      | `NVARCHAR(50)` | Line classification (e.g., Road, Touring)     |
+| `start_date`        | `DATE`         | Product availability start date               |
+
+---
+
+### 🧾 `gold.fact_sales`  
+Captures transactional sales activity.
+
+| 🔑 Column         | 📐 Data Type    | 📝 Description                                |
+|------------------|----------------|-----------------------------------------------|
+| `order_number`   | `NVARCHAR(50)` | Unique sales order ID                         |
+| `product_key`    | `INT`          | FK to `dim_products.product_key`              |
+| `customer_key`   | `INT`          | FK to `dim_customers.customer_key`            |
+| `order_date`     | `DATE`         | Order placement date                          |
+| `shipping_date`  | `DATE`         | Product shipping date                         |
+| `due_date`       | `DATE`         | Expected payment date                         |
+| `sales_amount`   | `INT`          | Total sales value                             |
+| `quantity`       | `INT`          | Units sold                                    |
+| `price`          | `INT`          | Price per unit                                |
+
+---
+
+## 📘 Glossary
+
+| Symbol / Prefix     | Meaning                                 |
+|---------------------|-----------------------------------------|
+| `dim_`              | Dimension table prefix                  |
+| `fact_`             | Fact table prefix                       |
+| `*_key`             | Surrogate key (generated via SQL)       |
+| `n/a`               | Not available or unknown                |
+| 🧾                  | Sales / transactional information       |
+| 🚲                 | Product or catalog information           |
+| 🧑‍💼                | Customer or person-related information    |
+
+---
+
+## 📎 Usage Notes
+
+- All dates are stored as `YYYY-MM-DD`.
+- Table joins are based on surrogate keys (`*_key`).
+- Missing values are handled in Silver Layer via null handling or defaults (`n/a`).
+- View logic is defined under `gold/` schema and automatically refreshed from Silver Layer.
+
+
+
